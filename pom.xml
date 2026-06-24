@@ -27,6 +27,7 @@
         <module>notification-mscv</module>
         <module>inventory-mscv</module>
         <module>category-mscv</module>
+        <module>authentificator-mscv</module>
     </modules>
 
     <packaging>pom</packaging>

@@ -1,5 +1,6 @@
 package com.gamehubstore.product_mscv.models.dtos;
 
+import com.gamehubstore.product_mscv.models.Audit;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,4 +15,5 @@ public class CategoryDTO {
     private String nombreCategory;
     private String descripcionCategory;
     private String estado; // Activa o Inactiva
+    private Audit audit;
 }

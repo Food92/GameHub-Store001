@@ -1,5 +1,6 @@
 package com.gamehubstore.product_mscv.models.dtos;
 
+import com.gamehubstore.product_mscv.models.Audit;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,4 +19,5 @@ public class ProductDTO {
     private  Long idCategory;
     private String descripcion;
     private Boolean estado;
+    private Audit audit = new Audit();
 }
