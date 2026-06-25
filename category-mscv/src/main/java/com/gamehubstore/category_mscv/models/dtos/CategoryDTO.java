@@ -12,6 +12,9 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class CategoryDTO {
+    @Schema(example = "1")
+    private Long idCategory;
+
     @NotBlank(message = "El nombre es obligatorio")
     @Schema(example = "Notebooks Gamer")
     private String nombreCategory;
