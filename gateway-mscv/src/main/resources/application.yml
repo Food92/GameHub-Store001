@@ -1,0 +1,78 @@
+spring:
+  application:
+    name: msvc-gateway
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            # 1. RUTA PARA EL MICROSERVICIO DE AUTENTICACIÓN (CUENTAS)
+            - id: auth-service
+              uri: lb://auth-service
+              predicates:
+                - Path=/api/v1/auth/**,/api/v1/cuentas/**
+
+            # 2. RUTA PARA EL FUTURO MICROSERVICIO DE VIDEOJUEGOS (CATÁLOGO)
+            - id: msvc-juegos
+              uri: lb://msvc-juegos
+              predicates:
+                - Path=/api/v1/juegos/**
+
+            # 3. RUTA PARA EL FUTURO MICROSERVICIO DE CARRITO Y PEDIDOS
+            - id: msvc-pedidos
+              uri: lb://msvc-pedidos
+              predicates:
+                - Path=/api/v1/pedidos/**,/api/v1/carrito/**
+
+            # ---------------------------------------------------------------
+            # RUTAS PARA EL OPENAPI (JSON) DE CADA MICROSERVICIO (SWAGGER AGGREGATION)
+            # ---------------------------------------------------------------
+            - id: auth-api-docs
+              uri: lb://auth-service
+              predicates:
+                - Path=/api-docs/auth
+              filters:
+                - RewritePath=/api-docs/auth, /v3/api-docs
+
+            - id: juegos-api-docs
+              uri: lb://msvc-juegos
+              predicates:
+                - Path=/api-docs/juegos
+              filters:
+                - RewritePath=/api-docs/juegos, /v3/api-docs
+
+            - id: pedidos-api-docs
+              uri: lb://msvc-pedidos
+              predicates:
+                - Path=/api-docs/pedidos
+              filters:
+                - RewritePath=/api-docs/pedidos, /v3/api-docs
+
+# PUNTO DE ENTRADA ÚNICO DEL ECOSISTEMA
+# Como tu Auth Service usaba el 8080, al Gateway le daremos el puerto 8090 para no chocar.
+# ¡A partir de ahora Postman y tu Frontend apuntarán al puerto 8090!
+server:
+  port: 8091
+
+# ENLACE CON TU SERVIDOR EUREKA (EL DIRECTORIO QUE ACABAMOS DE CREAR)
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+# CONFIGURACIÓN DEL SWAGGER UI CENTRALIZADO (DESPLEGABLE)
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /docs/swagger-ui.html
+    urls:
+      - name: Autenticación y Cuentas
+        url: /api-docs/auth
+      - name: Catálogo de Videojuegos
+        url: /api-docs/juegos
+      - name: Carrito y Pedidos
+        url: /api-docs/pedidos
+
+# CLAVE SECRETA JWT: Debe ser exactamente la misma firma que genera tu Auth Service
+jwt:
+  secret=clave-secreta-super-segura-para-jwt-gamehub-store-2026:
